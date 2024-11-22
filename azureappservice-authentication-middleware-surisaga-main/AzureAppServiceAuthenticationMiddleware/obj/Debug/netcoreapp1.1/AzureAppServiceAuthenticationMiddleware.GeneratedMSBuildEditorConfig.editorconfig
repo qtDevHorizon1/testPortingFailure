@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = AzureAppServiceAuthenticationMiddleware
+build_property.ProjectDir = /tmp/tempfspartition/QnetTransformArtifacts/MidTransformCode/sourceCode/azureappservice-authentication-middleware-surisaga-main/AzureAppServiceAuthenticationMiddleware/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
