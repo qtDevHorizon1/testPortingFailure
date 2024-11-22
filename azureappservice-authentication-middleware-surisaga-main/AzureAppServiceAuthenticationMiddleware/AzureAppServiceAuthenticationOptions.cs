@@ -11,7 +11,7 @@ namespace Middleware.Authentication.AppService
     {
         public AzureAppServiceAuthenticationOptions()
         {
-            this.AuthenticationScheme = "Automatic";
+            this.DefaultScheme = "Automatic";
         }
     }
 }
