@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -7,17 +8,27 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Middleware.Authentication.AppService
 {
-    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AzureAppServiceAuthenticationOptions>
+    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        public AzureAppServiceAuthenticationHandler(
+            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock)
+            : base(options, logger, encoder, clock)
+        {
+        }
+
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             Logger.LogInformation("starting authentication handler for app service authentication");
 
-            if (this.Context.User == null || this.Context.User.Identity == null || this.Context.User.Identity.IsAuthenticated == false)
+            if (Context.User == null || Context.User.Identity == null || !Context.User.Identity.IsAuthenticated)
             {
                 Logger.LogInformation("identity not found, attempting to fetch from auth endpoint /.auth/me");
 
@@ -55,7 +66,7 @@ namespace Middleware.Authentication.AppService
 
                 JArray payload = null;
 
-                using (HttpClient client = new HttpClient(handler))
+using (HttpClient client = new HttpClient(handler))
                 {
                     try
                     {
@@ -88,7 +99,7 @@ namespace Middleware.Authentication.AppService
 
                 Logger.LogDebug("payload was fetched from endpoint. id: {0}", id);
 
-                var identity = new GenericIdentity(id);
+                var identity = new ClaimsIdentity(Scheme.Name);
 
                 Logger.LogInformation("building claims from payload...");
 
@@ -104,22 +115,19 @@ namespace Middleware.Authentication.AppService
                 identity.AddClaim(new Claim("id_token", idToken));
                 identity.AddClaim(new Claim("provider_name", providerName));
 
-                ClaimsPrincipal p = new GenericPrincipal(identity, null); //todo add roles?
+                ClaimsPrincipal p = new ClaimsPrincipal(identity);
 
-                var ticket = new AuthenticationTicket(p,
-                    new Microsoft.AspNetCore.Http.Authentication.AuthenticationProperties(),
-                    Options.AuthenticationScheme);
+                var ticket = new AuthenticationTicket(p, Scheme.Name);
 
                 Logger.LogInformation("Set identity to user context object.");
-                this.Context.User = p;
+                Context.User = p;
 
                 Logger.LogInformation("identity build was a success, returning ticket");
                 return AuthenticateResult.Success(ticket);
-
             }
 
             Logger.LogInformation("identity already set, skipping middleware");
-            return AuthenticateResult.Skip();           
+            return AuthenticateResult.NoResult();
         }
     }
 }
