@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Middleware.Authentication.AppService
 {
-    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AzureAppServiceAuthenticationOptions>
     {
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -107,8 +107,8 @@ namespace Middleware.Authentication.AppService
                 ClaimsPrincipal p = new GenericPrincipal(identity, null); //todo add roles?
 
                 var ticket = new AuthenticationTicket(p,
-                    new Microsoft.AspNetCore.Authentication.AuthenticationProperties(),
-                    Scheme.Name);
+                    new Microsoft.AspNetCore.Http.Authentication.AuthenticationProperties(),
+                    Options.AuthenticationScheme);
 
                 Logger.LogInformation("Set identity to user context object.");
                 this.Context.User = p;
