@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,26 @@ using System.Threading.Tasks;
 
 namespace Middleware.Authentication.AppService
 {
-    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AzureAppServiceAuthenticationOptions>
+    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        private readonly AzureAppServiceAuthenticationOptions _azureOptions;
+
+        public AzureAppServiceAuthenticationHandler(
+            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            ILoggerFactory logger,
+            System.Text.Encodings.Web.UrlEncoder encoder,
+            Microsoft.AspNetCore.Authentication.ISystemClock clock,
+            IOptions<AzureAppServiceAuthenticationOptions> azureOptions)
+            : base(options, logger, encoder, clock)
+        {
+            _azureOptions = azureOptions.Value;
+        }
+
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             Logger.LogInformation("starting authentication handler for app service authentication");
 
-            if (this.Context.User == null || this.Context.User.Identity == null || this.Context.User.Identity.IsAuthenticated == false)
+            if (Context.User == null || Context.User.Identity == null || !Context.User.Identity.IsAuthenticated)
             {
                 Logger.LogInformation("identity not found, attempting to fetch from auth endpoint /.auth/me");
 
@@ -107,8 +121,8 @@ namespace Middleware.Authentication.AppService
                 ClaimsPrincipal p = new GenericPrincipal(identity, null); //todo add roles?
 
                 var ticket = new AuthenticationTicket(p,
-                    new Microsoft.AspNetCore.Http.Authentication.AuthenticationProperties(),
-                    Options.AuthenticationScheme);
+                    new AuthenticationProperties(),
+                    Scheme.Name);
 
                 Logger.LogInformation("Set identity to user context object.");
                 this.Context.User = p;
