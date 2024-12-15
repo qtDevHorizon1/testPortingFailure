@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AzureAppServiceAuthenticationMiddleware")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a13b8b17260dce22d3bb98e8e4271f05ca48ec6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca7658d88c2414d34cd1f848e1fc83b8158d8fc5")]
 [assembly: System.Reflection.AssemblyProductAttribute("AzureAppServiceAuthenticationMiddleware")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AzureAppServiceAuthenticationMiddleware")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

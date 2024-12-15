@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,11 +8,17 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Middleware.Authentication.AppService
 {
-    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AzureAppServiceAuthenticationOptions>
+    public class AzureAppServiceAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        public AzureAppServiceAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, System.Text.Encodings.Web.UrlEncoder encoder, ISystemClock clock)
+            : base(options, logger, encoder, clock)
+        {
+        }
+
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             Logger.LogInformation("starting authentication handler for app service authentication");
