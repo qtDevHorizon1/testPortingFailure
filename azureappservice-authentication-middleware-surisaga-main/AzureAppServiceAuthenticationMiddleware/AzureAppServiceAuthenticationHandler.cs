@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Middleware.Authentication.AppService
 {
@@ -113,7 +114,7 @@ namespace Middleware.Authentication.AppService
                 ClaimsPrincipal p = new GenericPrincipal(identity, null); //todo add roles?
 
                 var ticket = new AuthenticationTicket(p,
-                    new Microsoft.AspNetCore.Http.Authentication.AuthenticationProperties(),
+                    new AuthenticationProperties(),
                     Options.AuthenticationScheme);
 
                 Logger.LogInformation("Set identity to user context object.");
