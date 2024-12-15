@@ -115,7 +115,7 @@ namespace Middleware.Authentication.AppService
 
                 var ticket = new AuthenticationTicket(p,
                     new AuthenticationProperties(),
-                    Options.AuthenticationScheme);
+                    Scheme.Name);
 
                 Logger.LogInformation("Set identity to user context object.");
                 this.Context.User = p;
