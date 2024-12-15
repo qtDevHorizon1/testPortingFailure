@@ -126,7 +126,7 @@ namespace Middleware.Authentication.AppService
             }
 
             Logger.LogInformation("identity already set, skipping middleware");
-            return AuthenticateResult.Skip();           
+            return AuthenticateResult.NoResult();           
         }
     }
 }
