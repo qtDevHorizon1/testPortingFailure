@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Middleware.Authentication.AppService
 {
-    public class AzureAppServiceAuthenticationOptions : AuthenticationOptions
+    public class AzureAppServiceAuthenticationOptions : AuthenticationSchemeOptions
     {
+        public string Scheme { get; set; } = "Automatic";
+
         public AzureAppServiceAuthenticationOptions()
         {
-            this.AuthenticationScheme = "Automatic";
         }
     }
 }
